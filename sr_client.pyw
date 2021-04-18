@@ -110,7 +110,7 @@ class Ui_MainWindow(object):
         try:
             client.connect()
         except Exception as e:
-            QtWidgets.QMessageBox.critical(self.mainWindow, '连接至 {} 失败。\n{!s}'.format(host, e))
+            QtWidgets.QMessageBox.critical(self.mainWindow, '连接失败', '连接至 {} 失败。\n{!s}'.format(host, e))
             return
         self.mainLoopThread = MainLoopThread(client)
         self.mainLoopThread.failure.connect(self.displayFailureMessage)

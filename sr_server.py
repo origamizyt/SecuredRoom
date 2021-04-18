@@ -12,7 +12,7 @@ if args.anyIn('h', 'help'):
     sys.exit()
 value = args.choices('b', 'backlog')
 if value:
-    config['MinBetween'] = int(value)
+    config['MinBetween'] = float(value)
 value = args.choices('m', 'msglen')
 if value:
     config['MaxMessageLength'] = int(value)
