@@ -13,6 +13,7 @@ class StatusCode(IntEnum):
     SC_DUPLICATE_USER = 6
     SC_UNAUTHORIZED = 7
     SC_TOO_FREQUENT = 8
+    SC_MSG_TOO_LONG = 9
 
 class Status:
     'The status returned by server.'

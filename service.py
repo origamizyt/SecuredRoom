@@ -1,5 +1,5 @@
-import logging
-from typing import Any, Callable
+import logging, time, sys
+from typing import Any, Callable, Optional, Dict
 
 class Signal:
     'Represents a signal with callbacks.'
@@ -37,3 +37,47 @@ def hexdump(h: str) -> str:
         parts = parts[8:]
         if parts: value += '\n'
     return value
+
+def wait_forever() -> None:
+    'Blocks the thread until interruption.'
+    try:
+        while True: time.sleep(0xFFFF)
+    except KeyboardInterrupt: pass
+
+class ArgumentMap(Dict[str, str]):
+    'An argument mapping.'
+    def choices(self, *choices: str, default: Optional[str]=None) -> Optional[str]:
+        'Acts like "get" but accepts multiple keys.'
+        for choice in choices:
+            value = self.get(choice)
+            if value is not None:
+                return value
+        return default
+    def anyIn(self, *keys: str) -> bool:
+        'Tests whether any of the keys provided is in the map.'
+        return any(k in self for k in keys)
+
+def parse_args() -> ArgumentMap:
+    'Parses the command line arguments.'
+    value = {}
+    last = ''
+    nextis = False
+    for item in sys.argv:
+        if nextis:
+            if item.startswith('-'):
+                value[last] = ''
+                last = item.lstrip('-')
+            else:
+                value[last] = item
+                nextis = False
+        else:
+            if item.startswith('-'):
+                last = item.lstrip('-')
+                nextis = True
+    if nextis:
+        value[last] = ''
+    return ArgumentMap(value)
+
+def format_config(c: dict) -> str:
+    'Formats the configuration into a string.'
+    return ', '.join('{}={}'.format(k, v) for k, v in c.items())

@@ -13,7 +13,8 @@ code_map = {
     StatusCode.SC_WANDER_ROOM: '您还未进入任何一个房间。',
     StatusCode.SC_DUPLICATE_USER: '您的用户名在当前房间已被占用，导致无法进入此房间。',
     StatusCode.SC_UNAUTHORIZED: '提供的数字签名或加密数据无效。',
-    StatusCode.SC_TOO_FREQUENT: '发送的频率太高，请稍后再发送。'
+    StatusCode.SC_TOO_FREQUENT: '发送的频率太高，请稍后再发送。',
+    StatusCode.SC_MSG_TOO_LONG: '消息过长，服务器拒绝接收。'
 }
 
 class Ui_MainWindow(object):

@@ -3,11 +3,16 @@ import time
 from typing import Tuple
 from room import Room
 from structsock import StructuredSocket, PeerDisconnect
-from service import log, Signal, hexdump
+from service import format_config, log, Signal, hexdump
 from result import Status, StatusCode
 import elite, msgpack, queue
 
-MINIMUM_BETWEEN = 1
+# global configuration
+config = {
+    "MinBetween": 1,
+    "MaxMessageLength": 0xFF,
+    "BacklogSize": 5
+}
 
 class Session:
     'Represents a session to communicate with the client.'
@@ -84,13 +89,15 @@ class Session:
             elif op == 'send':
                 if self._room is None:
                     self._send(Status(StatusCode.SC_WANDER_ROOM))
-                elif time.time() - self._lastTimestamp <= MINIMUM_BETWEEN:
+                elif time.time() - self._lastTimestamp <= config.get("MinBetween", 1):
                     self._send(Status(StatusCode.SC_TOO_FREQUENT))
                 else:
                     message = data['message']
                     signature = data['signature']
                     if not self._scheme.verify(message.encode(), signature):
                         self._send(Status(StatusCode.SC_UNAUTHORIZED))
+                    elif len(message) >= config.get("MaxMessageLength", 0xFF):
+                        self._send(Status(StatusCode.SC_MSG_TOO_LONG))
                     else:
                         self._room.messageReceived(self._user, message)
                         self._lastTimestamp = time.time()
@@ -136,8 +143,9 @@ class Server:
             t = Thread(name='ServerDaemon', target=self.serve, daemon=True)
             t.start()
             return
-        log('正在监听 0.0.0.0:{}'.format(self._port))
-        self._sock.listen(5)
+        log('使用配置: {}'.format(format_config(config)))
+        log('正在监听 0.0.0.0 端口 {}'.format(self._port))
+        self._sock.listen(config.get('BacklogSize', 5))
         while True:
             client, addr = self._sock.accept()
             log('客户端 {}:{} 已连接'.format(*addr))
