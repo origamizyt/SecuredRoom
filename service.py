@@ -24,3 +24,16 @@ def log_init() -> None:
 def log(text: str) -> None:
     'Logs the text to standard output.'
     logging.info(text)
+
+def hexdump(h: str) -> str:
+    'Dumps the hex value.'
+    parts = [h[i:i+2] for i in range(0, len(h), 2)]
+    value = ''
+    count = 0
+    while parts:
+        value += '{}: '.format(str(count*8).zfill(4))
+        count += 1
+        value += ' '.join(parts[:8])
+        parts = parts[8:]
+        if parts: value += '\n'
+    return value

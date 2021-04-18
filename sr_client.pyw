@@ -1,3 +1,4 @@
+from service import hexdump
 from typing import Optional
 from result import StatusCode
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -94,8 +95,8 @@ class Ui_MainWindow(object):
     def showConnectionInfo(self):
         message = '连接信息:\n'
         message += '服务器 IP 地址: {}\n服务器端口: {}\n'.format(*self._client.address)
-        message += 'ECC 共享密钥: {}\nECC 私钥指纹: {}\nECC 公钥指纹: {}'.format(
-            self._client.scheme.secret().hex(),
+        message += 'ECC 共享密钥:\n{}\nECC 私钥指纹:\n{}\nECC 公钥指纹:\n{}'.format(
+            hexdump(self._client.scheme.secret().hex()),
             self._client.scheme.privateKey.export().fingerprint,
             self._client.scheme.publicKey.export().fingerprint
         )

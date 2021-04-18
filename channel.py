@@ -3,7 +3,7 @@ import time
 from typing import Tuple
 from room import Room
 from structsock import StructuredSocket, PeerDisconnect
-from service import log, Signal
+from service import log, Signal, hexdump
 from result import Status, StatusCode
 import elite, msgpack, queue
 
@@ -53,7 +53,7 @@ class Session:
                 self._send(
                     Status(StatusCode.SC_KEY_INVALID), False
                 )
-        log("密钥协商完毕。共享密钥为 {}".format(self._scheme.secret().hex()))
+        log("密钥协商完毕。共享密钥如下:\n{}".format(hexdump(self._scheme.secret().hex())))
     def _main(self) -> None:
         'The main loop of the session.'
         while True:
