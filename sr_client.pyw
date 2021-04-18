@@ -105,6 +105,7 @@ class Ui_MainWindow(object):
     def connect(self):
         host, ret = QtWidgets.QInputDialog.getText(self.mainWindow, '连接至服务器', '请输入服务器地址:')
         if not ret: return
+        self.stopClient()
         self._client = client = Client(host, 5000)
         try:
             client.connect()
