@@ -1,3 +1,6 @@
 import os
-os.system('pip install Elite -i https://pypi.douban.com/simple')
-os.system('pip install PyQt5 -i https://pypi.douban.com/simple')
+source = 'https://pypi.douban.com/simple'
+modules = ['PyCryptodome==3.9.9', 'Elite', 'PyQt5', 'msgpack', 'structsock']
+
+for m in modules:
+    os.system('pip install {} -i {}'.format(m, source))
